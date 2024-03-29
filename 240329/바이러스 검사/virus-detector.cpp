@@ -3,41 +3,34 @@
 
 using namespace std;
 
-int n, L, F;
+int n, L, F, i;
 long long answer;
 vector<int> v;
-vector<bool> visited;
 
 int main()
 {
-	ios::sync_with_stdio(false);
-	cin.tie(NULL); cout.tie(NULL);
+	scanf("%d", &n);
 
-	cin >> n;
+    v.resize(n);
 
-	for (int i = 0; i < n; i++) {
-		int x;
-		cin >> x;
-
-		v.push_back(x);
-		visited.push_back(false);
+	for (i = 0; i < n; i++) {
+		scanf("%d", &v[i]);
 	}
 
-	cin >> L >> F;
+	scanf("%d %d", &L, &F);
 
 	// 팀장은 무조건 한 명이 있어야 하므로
-	for (int i = 0; i < n; i++) {
+	for (i = 0; i < n; i++) {
 		v[i] -= L;
 		answer++;
 
-		if (v[i] < 0) visited[i] = true;
-		else {
+		if (v[i] > 0) {
 			answer += v[i] / F;
 			if (v[i] % F) answer++;
 		}
 	}
 
-	cout << answer;
+	printf("%lld", answer);
 
 	return 0;
 }
