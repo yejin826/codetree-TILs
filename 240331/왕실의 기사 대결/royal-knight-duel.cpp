@@ -12,10 +12,10 @@ struct G {
 	int h;
 	int w;
 	int k;
+	bool check;
 };
 vector<G> gisa;
 vector<pair<bool, int>> enable;
-vector<bool> check_move;
 pair<int, int> d[4] = { {-1,0},{0,1},{1,0},{0,-1} };
 
 bool isWall(int num, int dir)
@@ -128,7 +128,7 @@ void moving(int num, int dir)
 		gisa[num].c = start_c - 1;
 	}
 
-	check_move[num] = true;
+	gisa[num].check = true;
 }
 
 bool move_gisa(int num, int dir)
@@ -146,7 +146,7 @@ void cal_damage(int num)
 {
 	for (int i = 1; i <= N; i++) {
 		if (i == num) continue;
-		if (check_move[i] == false) continue;
+		if (gisa[i].check == false) continue;
 		if (enable[i].first == false) continue;
 
 		for (int j = gisa[i].r; j < gisa[i].r + gisa[i].h; j++) {
@@ -175,7 +175,6 @@ int main()
 	board.resize(L, vector<int>(L));
 	gisa.resize(N + 1);
 	enable.resize(N + 1, { true,0 });
-	check_move.resize(N + 1, false);
 
 	for (int i = 0; i < L; i++) {
 		for (int j = 0; j < L; j++) {
@@ -187,7 +186,7 @@ int main()
 		G t;
 		cin >> t.r >> t.c >> t.h >> t.w >> t.k;
 		
-		t.r--; t.c--;
+		t.r--; t.c--; t.check = false;
 		gisa[i] = t;
 	}
 
@@ -209,7 +208,7 @@ int main()
 
 		// check enable
 		if (enable[num].first == false) continue;
-		for (int i = 1; i <= N; i++ ) check_move[i] = false;
+		for (int i = 1; i <= N; i++ ) gisa[i].check = false;
 
 		// move gisa
 		bool isMove = move_gisa(num, dir);
