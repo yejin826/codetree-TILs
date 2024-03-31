@@ -204,8 +204,10 @@ int main()
 		if (enable[num].first == false) continue;
 		for (j = 1; j <= N; j++ ) gisa[j].check = false;
 
-		// move gisa && calculate damage
-		if (move_gisa(num, dir)) cal_damage(num);
+		// move gisa
+		bool isMove = move_gisa(num, dir);
+		// calculate damage
+		if (isMove) cal_damage(num);
 	}
 
 	int answer = 0;
