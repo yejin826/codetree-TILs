@@ -19,19 +19,18 @@ pair<int, int> d[4] = { {-1,0},{0,1},{1,0},{0,-1} };
 
 bool isWall(int num, int dir)
 {
-	int start_r = gisa[num].r;
-	int start_c = gisa[num].c;
 	int end_r = gisa[num].r + gisa[num].h - 1;
 	int end_c = gisa[num].c + gisa[num].w - 1;
+	int i;
 
 	if (dir == 0) {
-		start_r--;
-		if (start_r < 0 || L <= start_r) return false;
+		gisa[num].r--;
+		if (gisa[num].r < 0 || L <= gisa[num].r) return false;
 
-		for (int i = start_c; i <= end_c; i++) {
-			if (board[start_r][i].first == 2) return false;
-			if (board[start_r][i].second != 0) {
-				if (isWall(board[start_r][i].second, dir) == false) return false;
+		for (i = gisa[num].c; i <= end_c; i++) {
+			if (board[gisa[num].r][i].first == 2) return false;
+			if (board[gisa[num].r][i].second != 0) {
+				if (isWall(board[gisa[num].r][i].second, dir) == false) return false;
 			}
 		}
 	}
@@ -39,7 +38,7 @@ bool isWall(int num, int dir)
 		end_c++;
 		if (end_c < 0 || L <= end_c) return false;
 
-		for (int i = start_r; i <= end_r; i++) {
+		for (i = gisa[num].r; i <= end_r; i++) {
 			if (board[i][end_c].first == 2) return false;
 			if (board[i][end_c].second != 0) {
 				if (isWall(board[i][end_c].second, dir) == false) return false;
@@ -50,7 +49,7 @@ bool isWall(int num, int dir)
 		end_r++;
 		if (end_r < 0 || L <= end_r) return false;
 
-		for (int i = start_c; i <= end_c; i++) {
+		for (i = gisa[num].c; i <= end_c; i++) {
 			if (board[end_r][i].first == 2) return false;
 			if (board[end_r][i].second != 0) {
 				if (isWall(board[end_r][i].second, dir) == false) return false;
@@ -58,13 +57,13 @@ bool isWall(int num, int dir)
 		}
 	}
 	else {
-		start_c--;
-		if (start_c < 0 || L <= start_c) return false;
+		gisa[num].c--;
+		if (gisa[num].c < 0 || L <= gisa[num].c) return false;
 
-		for (int i = start_r; i <= end_r; i++) {
-			if (board[i][start_c].first == 2) return false;
-			if (board[i][start_c].second != 0) {
-				if (isWall(board[i][start_c].second, dir) == false) return false;
+		for (i = gisa[num].r; i <= end_r; i++) {
+			if (board[i][gisa[num].c].first == 2) return false;
+			if (board[i][gisa[num].c].second != 0) {
+				if (isWall(board[i][gisa[num].c].second, dir) == false) return false;
 			}
 		}
 	}
@@ -74,57 +73,56 @@ bool isWall(int num, int dir)
 
 void moving(int num, int dir)
 {
-	int start_r = gisa[num].r;
-	int start_c = gisa[num].c;
 	int end_r = gisa[num].r + gisa[num].h - 1;
 	int end_c = gisa[num].c + gisa[num].w - 1;
+	int i;
 
 	if (dir == 0) {
 		// remove before
-		for (int i = start_c; i <= end_c; i++) {
+		for (i = gisa[num].c; i <= end_c; i++) {
 			board[end_r][i].second = 0;
 		}
 		// move
-		start_r--;
-		for (int i = start_c; i <= end_c; i++) {
-			if (board[start_r][i].second != 0) moving(board[start_r][i].second, dir);
-			board[start_r][i].second = num;
+		gisa[num].r--;
+		for (i = gisa[num].c; i <= end_c; i++) {
+			if (board[gisa[num].r][i].second != 0) moving(board[gisa[num].r][i].second, dir);
+			board[gisa[num].r][i].second = num;
 		}
 		// update gisa's info
-		gisa[num].r = start_r - 1;
+		gisa[num].r = gisa[num].r - 1;
 	}
 	else if (dir == 1) {
-		for (int i = start_r; i <= end_r; i++) {
-			board[i][start_c].second = 0;
+		for (i = gisa[num].r; i <= end_r; i++) {
+			board[i][gisa[num].c].second = 0;
 		}
 		end_c++;
-		for (int i = start_r; i <= end_r; i++) {
+		for (i = gisa[num].r; i <= end_r; i++) {
 			if (board[i][end_c].second != 0) moving(board[i][end_c].second, dir);
 			board[i][end_c].second = num;
 		}
-		gisa[num].c = start_c + 1;
+		gisa[num].c = gisa[num].c + 1;
 	}
 	else if (dir == 2) {
-		for (int i = start_c; i <= end_c; i++) {
-			board[start_r][i].second = 0;
+		for (i = gisa[num].c; i <= end_c; i++) {
+			board[gisa[num].r][i].second = 0;
 		}
 		end_r++;
-		for (int i = start_c; i <= end_c; i++) {
+		for (i = gisa[num].c; i <= end_c; i++) {
 			if (board[end_r][i].second != 0) moving(board[end_r][i].second, dir);
-			board[start_r][i].second = num;
+			board[gisa[num].r][i].second = num;
 		}
-		gisa[num].r = start_r + 1;
+		gisa[num].r = gisa[num].r + 1;
 	}
 	else {
-		for (int i = start_r; i <= end_r; i++) {
+		for (i = gisa[num].r; i <= end_r; i++) {
 			board[i][end_c].second = 0;
 		}
-		start_c--;
-		for (int i = start_r; i <= end_r; i++) {
-			if (board[i][start_c].second != 0) moving(board[i][start_c].second, dir);
-			board[i][start_c].second = num;
+		gisa[num].c--;
+		for (i = gisa[num].r; i <= end_r; i++) {
+			if (board[i][gisa[num].c].second != 0) moving(board[i][gisa[num].c].second, dir);
+			board[i][gisa[num].c].second = num;
 		}
-		gisa[num].c = start_c - 1;
+		gisa[num].c = gisa[num].c - 1;
 	}
 
 	gisa[num].check = true;
@@ -175,22 +173,22 @@ int main()
 	gisa.resize(N + 1);
 	enable.resize(N + 1, { true,0 });
 
-	for (int i = 0; i < L; i++) {
-		for (int j = 0; j < L; j++) {
+	int i, j;
+
+	for (i = 0; i < L; i++) {
+		for (j = 0; j < L; j++) {
 			cin >> board[i][j].first;
 		}
 	}
 
-	for (int i = 1; i <= N; i++) {
-		G t;
-		cin >> t.r >> t.c >> t.h >> t.w >> t.k;
+	for (i = 1; i <= N; i++) {
+		cin >> gisa[i].r >> gisa[i].c >> gisa[i].h >> gisa[i].w >> gisa[i].k;
 		
-		t.r--; t.c--; t.check = false;
-		gisa[i] = t;
+		gisa[i].r--; gisa[i].c--; gisa[i].check = false;
 	}
 
-	for (int i = 1; i <= N; i++) {
-		for (int j = gisa[i].r; j < gisa[i].r + gisa[i].h; j++) {
+	for (i = 1; i <= N; i++) {
+		for (j = gisa[i].r; j < gisa[i].r + gisa[i].h; j++) {
 			for (int k = gisa[i].c; k < gisa[i].c + gisa[i].w; k++) {
 				board[j][k].second = i;
 			}
@@ -198,23 +196,21 @@ int main()
 	}
 
 	// input & calculate : for memory save
-	for (int i = 0; i < Q; i++) {
+	for (i = 0; i < Q; i++) {
 		int num, dir;
 		cin >> num >> dir;
 
 		// check enable
 		if (enable[num].first == false) continue;
-		for (int i = 1; i <= N; i++ ) gisa[i].check = false;
+		for (j = 1; j <= N; j++ ) gisa[j].check = false;
 
-		// move gisa
-		bool isMove = move_gisa(num, dir);
-		// calculate damage
-		if (isMove) cal_damage(num);
+		// move gisa && calculate damage
+		if (move_gisa(num, dir)) cal_damage(num);
 	}
 
 	int answer = 0;
 
-	for (int i = 1; i <= N; i++) {
+	for (i = 1; i <= N; i++) {
 		if (enable[i].first) answer += enable[i].second;
 	}
 
