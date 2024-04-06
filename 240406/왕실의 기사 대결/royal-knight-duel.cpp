@@ -17,6 +17,7 @@ vector<G> gisa;
 vector<int> nr;
 vector<int> nc;
 vector<int> damage;
+vector<bool> is_move;
 int dr[4] = { -1,0,1,0 };
 int dc[4] = { 0,1,0,-1 };
 
@@ -26,7 +27,7 @@ void BFS(int num, int dir)
 	q.push(num);
 
 	for (int i = 1; i <= N; i++) {
-		nr[i] = -1; nc[i] = -1;
+		nr[i] = -1; nc[i] = -1; is_move[i] = false;
 	}
 
 	while (!q.empty()) {
@@ -35,9 +36,11 @@ void BFS(int num, int dir)
 
 		q.pop();
 
+		// check boundary
 		if (now.r + dr[dir] < 1 || L < now.r + dr[dir] || now.c + dc[dir] < 1 || L < now.c + dc[dir]) return;
 		if (now.r + now.h - 1 + dr[dir] < 1 || L < now.r + now.h - 1 + dr[dir] || now.c + now.w - 1 + dc[dir] < 1 || L < now.c + now.w - 1 + dc[dir]) return;
 
+		// check brick
 		for (int i = now.r + dr[dir]; i <= now.r + now.h - 1 + dr[dir]; i++) {
 			for (int j = now.c + dc[dir]; j <= now.c + now.w - 1 + dc[dir]; j++) {
 				if (arr[i][j] == 2) return;
@@ -47,6 +50,7 @@ void BFS(int num, int dir)
 		nr[idx] = now.r + dr[dir];
 		nc[idx] = now.c + dc[dir];
 
+		// check other gisa
 		for (int i = 1; i <= N; i++) {
 			if (i == idx) continue;
 
@@ -56,24 +60,26 @@ void BFS(int num, int dir)
 			if (next.c + next.w - 1 < now.c + dc[dir] || now.c + now.w - 1 + dc[dir] < next.c) continue;
 
 			q.push(i);
+			is_move[i] = true;
 		}
 	}
 
+	gisa[num].r += dr[dir];
+	gisa[num].c += dc[dir];
+
 	// move
 	for (int i = 1; i <= N; i++) {
-		if (i == num) continue;
+		if (!is_move[i]) continue;
 
-		if (nr[i] != -1 && nc[i] != -1) {
-			gisa[i].r = nr[i];
-			gisa[i].c = nc[i];
+		gisa[i].r = nr[i];
+		gisa[i].c = nc[i];
 
-			// damage
-			for (int j = gisa[i].r; j < gisa[i].r + gisa[i].h; j++) {
-				for (int k = gisa[i].c; k < gisa[i].c + gisa[i].w; k++) {
-					if (arr[j][k] == 1) {
-						gisa[i].k--;
-						damage[i]++;
-					}
+		// damage
+		for (int j = gisa[i].r; j < gisa[i].r + gisa[i].h; j++) {
+			for (int k = gisa[i].c; k < gisa[i].c + gisa[i].w; k++) {
+				if (arr[j][k] == 1) {
+					gisa[i].k--;
+					damage[i]++;
 				}
 			}
 		}
@@ -99,6 +105,7 @@ int main()
 	nr.resize(N + 1, 0);
 	nc.resize(N + 1, 0);
 	damage.resize(N + 1, 0);
+	is_move.resize(N + 1, false);
 
 	for (int i = 1; i <= N; i++) {
 		cin >> gisa[i].r >> gisa[i].c >> gisa[i].h >> gisa[i].w >> gisa[i].k;
@@ -108,7 +115,8 @@ int main()
 		int num, dir;
 		cin >> num >> dir;
 
-		if (gisa[num].k > 0) BFS(num, dir);
+		if (gisa[num].k <= 0) continue;
+		BFS(num, dir);
 	}
 
 	for (int i = 1; i <= N; i++) {
