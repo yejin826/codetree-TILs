@@ -14,26 +14,22 @@ struct G {
 	int k;
 };
 vector<G> gisa;
-vector<int> nr;
-vector<int> nc;
 vector<int> damage;
 vector<bool> is_move;
+
 int dr[4] = { -1,0,1,0 };
 int dc[4] = { 0,1,0,-1 };
 
 void BFS(int num, int dir)
 {
+	for (int i = 1; i <= N; i++) is_move[i] = false;
+
 	queue<int> q;
 	q.push(num);
-
-	for (int i = 1; i <= N; i++) {
-		nr[i] = -1; nc[i] = -1; is_move[i] = false;
-	}
 
 	while (!q.empty()) {
 		int idx = q.front();
 		G now = gisa[idx];
-
 		q.pop();
 
 		// check boundary
@@ -47,14 +43,13 @@ void BFS(int num, int dir)
 			}
 		}
 
-		nr[idx] = now.r + dr[dir];
-		nc[idx] = now.c + dc[dir];
-
 		// check other gisa
 		for (int i = 1; i <= N; i++) {
 			if (i == idx) continue;
 
 			G next = gisa[i];
+
+			if (next.k <= 0) continue;
 
 			if (next.r + next.h - 1 < now.r + dr[dir] || now.r + now.h - 1 + dr[dir] < next.r) continue;
 			if (next.c + next.w - 1 < now.c + dc[dir] || now.c + now.w - 1 + dc[dir] < next.c) continue;
@@ -69,10 +64,11 @@ void BFS(int num, int dir)
 
 	// move
 	for (int i = 1; i <= N; i++) {
+		if (i == num) continue;
 		if (!is_move[i]) continue;
 
-		gisa[i].r = nr[i];
-		gisa[i].c = nc[i];
+		gisa[i].r += dr[dir];
+		gisa[i].c += dc[dir];
 
 		// damage
 		for (int j = gisa[i].r; j < gisa[i].r + gisa[i].h; j++) {
@@ -86,6 +82,14 @@ void BFS(int num, int dir)
 	}
 }
 
+void initialize()
+{
+	arr.resize(L + 1, vector<int>(L + 1));
+	gisa.resize(N + 1);
+	damage.resize(N + 1, 0);
+	is_move.resize(N + 1, false);
+}
+
 int main()
 {
 	ios::sync_with_stdio(false);
@@ -93,19 +97,13 @@ int main()
 
 	cin >> L >> N >> Q;
 
-	arr.resize(L + 1, vector<int>(L + 1));
+	initialize();
 
 	for (int i = 1; i <= L; i++) {
 		for (int j = 1; j <= L; j++) {
 			cin >> arr[i][j];
 		}
 	}
-
-	gisa.resize(N + 1);
-	nr.resize(N + 1, 0);
-	nc.resize(N + 1, 0);
-	damage.resize(N + 1, 0);
-	is_move.resize(N + 1, false);
 
 	for (int i = 1; i <= N; i++) {
 		cin >> gisa[i].r >> gisa[i].c >> gisa[i].h >> gisa[i].w >> gisa[i].k;
@@ -115,13 +113,12 @@ int main()
 		int num, dir;
 		cin >> num >> dir;
 
-		if (gisa[num].k <= 0) continue;
-		BFS(num, dir);
+		if (gisa[num].k > 0) BFS(num, dir);
 	}
 
+	// calculate damage
 	for (int i = 1; i <= N; i++) {
-		if (gisa[i].k <= 0) continue;
-		damage[0] += damage[i];
+		if (gisa[i].k > 0) damage[0] += damage[i];
 	}
 
 	cout << damage[0];
