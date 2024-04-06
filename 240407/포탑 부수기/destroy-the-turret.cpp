@@ -179,7 +179,10 @@ bool check_raser()
 	// jaejungbee
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++) {
-			if (arr[i][j] == 0) continue;
+			if (arr[i][j] <= 0) {
+				arr[i][j] = 0;
+				continue;
+			}
 			if (i == attackter.first && j == attackter.second) continue;
 			if (i == target.first && j == target.second) continue;
 			
@@ -208,12 +211,16 @@ void go_bomb()
 		if (arr[nx][ny] == 0) continue;
 
 		arr[nx][ny] -= d;
+
 	}
 
 	// jaejungbee
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++) {
-			if (arr[i][j] == 0) continue;
+			if (arr[i][j] <= 0) {
+				arr[i][j] = 0;
+				continue;
+			}
 			if (i == attackter.first && j == attackter.second) continue;
 			if (i == target.first && j == target.second) continue;
 
