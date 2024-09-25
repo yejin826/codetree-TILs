@@ -523,11 +523,7 @@ int FIND()
         P now = q.front();
 
         if (now.red.first == O.first && now.red.second == O.second) {
-            if (now.blue.first == O.first && now.blue.second == O.second) {
-                q.pop();
-                continue;
-            }
-            else return now.cnt;
+            return now.cnt;
         }
         if (now.cnt >= 10) {
             q.pop();
