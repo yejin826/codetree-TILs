@@ -529,7 +529,7 @@ int FIND()
             }
             else return now.cnt;
         }
-        if (now.cnt > 10) {
+        if (now.cnt >= 10) {
             q.pop();
             continue;
         }
