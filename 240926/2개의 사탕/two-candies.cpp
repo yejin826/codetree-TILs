@@ -126,7 +126,7 @@ void MOVE_UP(P coord)
         next_red = { x,y };
     }
 
-    if (coord.red.first == next_red.first && coord.red.second == next_red.second) {
+    if (coord.red.first == next_red.first && coord.red.second == next_red.second && coord.blue == next_blue) {
         return;
     }
     else {
@@ -249,7 +249,7 @@ void MOVE_RIGHT(P coord)
         next_blue = { x,y };
     }
 
-    if (coord.red.first == next_red.first && coord.red.second == next_red.second) {
+    if (coord.red.first == next_red.first && coord.red.second == next_red.second && coord.blue == next_blue) {
         return;
     }
     else {
@@ -372,7 +372,7 @@ void MOVE_DOWN(P coord)
         next_blue = { x,y };
     }
 
-    if (coord.red.first == next_red.first && coord.red.second == next_red.second) {
+    if (coord.red.first == next_red.first && coord.red.second == next_red.second && coord.blue == next_blue) {
         return;
     }
     else {
@@ -495,7 +495,7 @@ void MOVE_LEFT(P coord)
         next_red = { x,y };
     }
 
-    if (coord.red.first == next_red.first && coord.red.second == next_red.second) {
+    if (coord.red.first == next_red.first && coord.red.second == next_red.second && coord.blue == next_blue) {
         return;
     }
     else {
