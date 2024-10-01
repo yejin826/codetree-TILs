@@ -169,7 +169,7 @@ int main()
     int remain = 0;
 
     for (int i = 0; i < 4; i++) {
-        for (int j = 4; j <= 9; j++) {
+        for (int j = 6; j <= 9; j++) {
             if (board[i][j] == true) remain++;
             if (board[j][i] == true) remain++;
         }
