@@ -105,6 +105,8 @@ void Check_line()
             board[3][i] = false;
 
             Down_red(i - 1);
+            
+            i++;
         }
     }
 
@@ -119,6 +121,8 @@ void Check_line()
             board[i][3] = false;
 
             Down_yel(i - 1);
+
+            i++;
         }
     }
 }
@@ -141,11 +145,26 @@ void Check_area()
         bool is_in = false;
 
         for (int j = 0; j < 4; j++) {
-            if (board[i][j] == true) is_in == true;
+            if (board[i][j] == true) is_in = true;
         }
 
         if (is_in) Down_yel(8);
     }
+}
+
+void print_grid()
+{
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            if (0 <= i && i < 4 && 0 <= j && j < 4) cout << "- ";
+            else {
+                if (board[i][j] == true) cout << "1 ";
+                else cout << "0 ";
+            }
+        }
+        cout << endl;
+    }
+    cout << endl;
 }
 
 int main()
@@ -160,8 +179,12 @@ int main()
         Move_red(tmp);
         Move_yel(tmp);
 
+        //print_grid();
+
         Check_line();
         Check_area();
+
+        //print_grid();
     }
 
     cout << score << '\n';
