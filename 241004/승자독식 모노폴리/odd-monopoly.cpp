@@ -154,12 +154,9 @@ int main()
             break;
         }
 
-        minus_time();
-
         move_player();
-
+        minus_time();
         check_double();
-
         if (is_end()) break;
     }
 
