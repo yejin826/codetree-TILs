@@ -18,12 +18,12 @@ vector<info> passenger;
 vector<bool> is_arrived;
 pair<int, int> direction[4] = { {0,1},{0,-1},{1,0},{-1,0} };
 
-int BFS(int sx, int sy, int ex, int ey, bool charging) // charging은 승객 -> 도착지 여정인지 확인
+int BFS(int sx, int sy, int ex, int ey) // charging은 승객 -> 도착지 여정인지 확인
 {
     vector<vector<bool>> visited;
     visited.resize(N, vector<bool>(N, false));
     queue<pair<pair<int, int>, int>> q; // { { 행, 열 }, 거리 }
-    int dist = 0;
+    int dist = -1;
 
     q.push({ {sx, sy}, 0 });
     visited[sx][sy] = true;
@@ -37,7 +37,6 @@ int BFS(int sx, int sy, int ex, int ey, bool charging) // charging은 승객 -> 
 
         if (x == ex && y == ey) {
             dist = c;
-            if (charging) vehicle = { x, y };
             break;
         }
 
@@ -78,7 +77,11 @@ int search_move_to_passenger()
     for (int i = 1; i <= M; i++) {
         if (is_arrived[i]) continue;
 
-        candidate.push_back({ BFS(vehicle.first, vehicle.second, passenger[i].s_x, passenger[i].s_y, false), i });
+        int dist = BFS(vehicle.first, vehicle.second, passenger[i].s_x, passenger[i].s_y);
+
+        if (dist == -1) return -1;
+
+        candidate.push_back({ dist, i });
     }
 
     sort(candidate.begin(), candidate.end(), cmp);
@@ -93,7 +96,9 @@ int search_move_to_passenger()
 
 bool move_to_destination(int id)
 {
-    int dist = BFS(passenger[id].s_x, passenger[id].s_y, passenger[id].d_x, passenger[id].d_y, true);
+    int dist = BFS(passenger[id].s_x, passenger[id].s_y, passenger[id].d_x, passenger[id].d_y);
+
+    if (dist == -1) return false;
 
     vehicle = { passenger[id].d_x, passenger[id].d_y };
     C -= dist;
@@ -105,6 +110,13 @@ bool move_to_destination(int id)
         is_arrived[id] = true;
         return true;
     }
+}
+
+void print_coord()
+{
+    cout << "vehicle : " << vehicle.first << ", " << vehicle.second << endl;
+    cout << "battery : " << C << endl;
+    cout << endl;
 }
 
 int main()
@@ -136,12 +148,16 @@ int main()
     int answer = 0;
 
     for (int t = 1; t <= M; t++) {
+        //print_coord();
+
         int target_num = search_move_to_passenger();
 
         if (target_num == -1) {
             answer = -1;
             break;
         }
+
+        //print_coord();
 
         // 승객 -> 목적지
         bool check_arrive = move_to_destination(target_num);
@@ -150,6 +166,8 @@ int main()
             answer = -1;
             break;
         }
+
+        //print_coord();
 
         answer = C;
     }
