@@ -78,7 +78,7 @@ void snail_route()
             temp.x += dir_s[idx].first;
             temp.y += dir_s[idx].second;
             if (j == i - 1) {
-                if (i == 1) break;
+                if (i == 1) break; // { N/2, N/2 } 중복 제거 미흡
                 else {
                     idx--;
                     idx += 4;
@@ -142,7 +142,7 @@ bool CHECK_H(int x, int y)
 
 int MOVE_S(int idx)
 {
-    if (idx >= S_list.size()) idx %= S_list.size();
+    if (idx >= S_list.size()) idx %= S_list.size(); // 이 부분 처리 미흡
 
     S = S_list[idx];
 
@@ -170,6 +170,7 @@ int MOVE_S(int idx)
             sum++;
             M_isOut[i] = true;
         }
+        // 격자 밖 처리 미흡
     }
 
     return sum;
