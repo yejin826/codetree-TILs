@@ -44,7 +44,7 @@ void DFS(int r, int c, int id, vector<vector<bool>> visited, int cnt)
             team[id].push_back(tmp);
             DFS(nx, ny, id, visited, cnt + 1);
         }
-        if ((tmp_arr[r][c] == 1 || tmp_arr[r][c] == 2) && tmp_arr[nx][ny] == 3) {
+        if (tmp_arr[r][c] == 2 && tmp_arr[nx][ny] == 3) {
             tmp.num = 3;
             tmp.sunseo = cnt;
             num_member[id] = cnt;
