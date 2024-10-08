@@ -148,14 +148,12 @@ int check_row(int R, bool left_right)
 
     int sum = 0;
 
-    if (team_head[team_num]) {
-        sum = tmp.sunseo * tmp.sunseo;
-    }
-    else {
-        sum =  (num_member[team_num] + 1 - tmp.sunseo) * (num_member[team_num] + 1 - tmp.sunseo);
-    }
+    if (team_num < M) {
+        if (team_head[team_num]) sum = tmp.sunseo * tmp.sunseo;
+        else sum = (num_member[team_num] + 1 - tmp.sunseo) * (num_member[team_num] + 1 - tmp.sunseo);
 
-    if (team_num <= M) change_head(team_num);
+        change_head(team_num);
+    }
 
     return sum;
 }
@@ -200,14 +198,12 @@ int check_col(int C, bool left_right)
 
     int sum = 0;
 
-    if (team_head[team_num]) {
-        sum = tmp.sunseo * tmp.sunseo;
-    }
-    else {
-        sum = (num_member[team_num] + 1 - tmp.sunseo) * (num_member[team_num] + 1 - tmp.sunseo);
-    }
+    if (team_num < M) {
+        if (team_head[team_num]) sum = tmp.sunseo * tmp.sunseo;
+        else sum = (num_member[team_num] + 1 - tmp.sunseo) * (num_member[team_num] + 1 - tmp.sunseo);
 
-    if (team_num <= M) change_head(team_num);
+        change_head(team_num);
+    }
 
     return sum;
 }
