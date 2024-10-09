@@ -18,14 +18,14 @@ void grow_up()
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            if (1 <= arr[i][j].tree && arr[i][j].tree <= 100) {
+            if (1 <= arr[i][j].tree) {
                 for (int k = 0; k < 4; k++) {
                     int nx = i + d[k].first;
                     int ny = j + d[k].second;
 
                     if (nx < 0 || N <= nx || ny < 0 || N <= ny) continue;
 
-                    if (1 <= arr[nx][ny].tree && arr[nx][ny].tree <= 100) {
+                    if (1 <= arr[nx][ny].tree) {
                         tmp_grow[i][j]++;
                     }
                 }
@@ -35,6 +35,8 @@ void grow_up()
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
+            if (arr[i][j].remain > 0) continue;
+
             arr[i][j].tree += tmp_grow[i][j];
         }
     }
@@ -46,23 +48,22 @@ void breed()
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            if (1 <= arr[i][j].tree && arr[i][j].tree <= 100) {
+            if (1 <= arr[i][j].tree) {
                 int cnt = 0;
-                pair<int, int> coord_list[4];
+                vector<pair<int, int>> coord_list;
 
                 for (int k = 0; k < 4; k++) {
                     int nx = i + d[k].first;
                     int ny = j + d[k].second;
 
                     if (nx < 0 || N <= nx || ny < 0 || N <= ny) continue;
-
-                    if (arr[nx][ny].tree == 0 && arr[nx][ny].remain == 0) {
-                        coord_list[cnt] = { nx, ny };
-                        cnt++;
-                    }
+                    if (arr[nx][ny].tree == -1 || 1 <= arr[nx][ny].tree || arr[nx][ny].remain > 0) continue;
+                    
+                    coord_list.push_back({ nx, ny });
+                    cnt++;
                 }
                 
-                for (int k = 0; k < cnt; k++) {
+                for (int k = 0; k < coord_list.size(); k++) {
                     tmp_breed[coord_list[k].first][coord_list[k].second] += (arr[i][j].tree / cnt);
                 }
             }
@@ -71,6 +72,8 @@ void breed()
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
+            if (arr[i][j].remain > 0) continue;
+
             arr[i][j].tree += tmp_breed[i][j];
         }
     }
@@ -82,9 +85,11 @@ pair<int, int> select()
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            if (arr[i][j].tree == -1 || arr[i][j].tree == 0 || arr[i][j].remain > 0) continue;
+            if (arr[i][j].tree == -1) continue;
             
             tmp_max[i][j] = arr[i][j].tree;
+
+            if (arr[i][j].tree == 0) continue;
 
             for (int l = 0; l < 4; l++) {
                 for (int k = 1; k <= K; k++) {
@@ -116,27 +121,14 @@ pair<int, int> select()
     return target;
 }
 
-void minus_drug()
-{
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            arr[i][j].remain--;
-
-            if (arr[i][j].remain < 0) arr[i][j].remain = 0;
-        }
-    }
-}
-
 int spread(int x, int y)
 {
-    minus_drug();
-
     if (x == -1 && y == -1) return 0;
 
     int total = arr[x][y].tree;
 
     arr[x][y].tree = 0;
-    arr[x][y].remain = C;
+    arr[x][y].remain = C + 1;
 
     for (int i = 0; i < 4; i++) {
         for (int j = 1; j <= K; j++) {
@@ -144,21 +136,32 @@ int spread(int x, int y)
             int ny = y + dc[i].second * j;
 
             if (nx < 0 || N <= nx || ny < 0 || N <= ny) continue;
-            if (arr[nx][ny].tree == -1) break;
             
-            if (arr[nx][ny].tree == 0) {
-                arr[nx][ny].remain = C;
+            if (arr[nx][ny].tree == 0 || arr[nx][ny].tree == -1) {
+                arr[nx][ny].remain = C + 1;
                 break;
             }
-            if (1 <= arr[nx][ny].tree && arr[i][j].tree <= 100) {
+
+            if (1 <= arr[nx][ny].tree) {
                 total += arr[nx][ny].tree;
                 arr[nx][ny].tree = 0;
-                arr[nx][ny].remain = C;
+                arr[nx][ny].remain = C + 1;
             }
         }
     }
 
     return total;
+}
+
+void minus_drug()
+{
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            arr[i][j].remain--;
+
+            if (arr[i][j].remain <= 0) arr[i][j].remain = 0;
+        }
+    }
 }
 
 void print_grid()
@@ -219,6 +222,7 @@ int main()
         breed();
         pair<int, int> selected = select();
         answer += spread(selected.first, selected.second);
+        minus_drug();
     }
 
     cout << answer;
