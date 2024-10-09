@@ -101,8 +101,8 @@ pair<int, int> select()
         }
     }
 
-    int max = -987654321;
-    pair<int, int> target;
+    int max = 0;
+    pair<int, int> target = {-1,-1};
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
@@ -130,6 +130,8 @@ void minus_drug()
 int spread(int x, int y)
 {
     minus_drug();
+
+    if (x == -1 && y == -1) return 0;
 
     int total = arr[x][y].tree;
 
