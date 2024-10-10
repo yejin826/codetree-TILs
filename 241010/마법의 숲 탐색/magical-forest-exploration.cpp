@@ -6,7 +6,6 @@ using namespace std;
 
 int R, C, K;
 vector<vector<int>> arr;
-vector<pair<int, int>> start_info; // 출발하는 열, 출구 방향
 struct info {
     int x;
     int y;
@@ -18,7 +17,7 @@ pair<int, int> dir[4] = { {-1,0},{0,1},{1,0},{0,-1} };
 void move_south(int id)
 {
     int x = 1;
-    int y = start_info[id].first;
+    int y = k_list[id].y;
 
     while (true) {
         if (R + 2 < x + 2) break;
@@ -33,7 +32,7 @@ void move_south(int id)
 
     k_list[id].x = x;
     k_list[id].y = y;
-    k_list[id].d = start_info[id].second;
+    k_list[id].d = k_list[id].d;
 }
 
 void move_west(int id)
@@ -88,14 +87,41 @@ void move_east(int id)
 
 void Move(int id)
 {
-    move_south(id);
-    move_west(id);
-    move_east(id);
+    int x = 1;
+    int y = k_list[id].y;
+    int d = k_list[id].d;
+
+    while (R + 1 > x) {
+        if (arr[x + 1][y - 1] == 0 && arr[x + 2][y] == 0 && arr[x + 1][y + 1] == 0) {
+            x++;
+        }
+        else {
+            if (1 <= y - 2 && arr[x - 1][y - 1] == 0 && arr[x][y - 2] == 0 && arr[x + 1][y - 1] == 0 && arr[x + 1][y - 2] == 0 && arr[x + 2][y - 1] == 0) {
+                x++;
+                y--;
+                d = (d - 1 + 4) % 4;
+            }
+            else {
+                if (y + 2 <= C && arr[x - 1][y + 1] == 0 && arr[x][y + 2] == 0 && arr[x + 1][y + 1] == 0 && arr[x + 1][y + 2] == 0 && arr[x + 2][y + 1] == 0) {
+                    x++;
+                    y++;
+                    d = (d + 1) % 4;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    }
+
+    k_list[id].x = x;
+    k_list[id].y = y;
+    k_list[id].d = d;
 }
 
 bool Check_in(int id)
 {
-    if ((4 <= k_list[id].x && k_list[id].x <= R + 1) && (2 <= k_list[id].y && k_list[id].y <= C - 1)) return true;
+    if (4 <= k_list[id].x) return true;
     else return false;
 }
 
@@ -125,12 +151,12 @@ int go_down(int id)
     q.push(id);
     visited[id] = true;
     int max_r = k_list[id].x + 1;
-    
+
     while (!q.empty()) {
         int out_x = k_list[q.front()].x + dir[k_list[q.front()].d].first;
         int out_y = k_list[q.front()].y + dir[k_list[q.front()].d].second;
 
-        if (max_r < k_list[q.front()].x + 1) max_r = k_list[q.front()].x + 1;
+        if (max_r <= k_list[q.front()].x + 1) max_r = k_list[q.front()].x + 1;
 
         q.pop();
 
@@ -139,8 +165,8 @@ int go_down(int id)
             int ny = out_y + dir[i].second;
 
             if (nx < 3 || R + 2 < nx || ny < 1 || C < ny) continue;
-            if (arr[nx][ny] == arr[out_x][out_y]) continue;
-            if (arr[nx][ny] == 0 || visited[arr[nx][ny]]) continue;
+            if (arr[nx][ny] == 0) continue;
+            if (visited[arr[nx][ny]]) continue;
 
             visited[arr[nx][ny]] = true;
             q.push(arr[nx][ny]);
@@ -167,12 +193,9 @@ int main()
     cin >> R >> C >> K;
 
     arr.resize(R + 3, vector<int>(C + 1, 0));
-    start_info.resize(K + 1);
     k_list.resize(K + 1);
 
-    for (int i = 1; i <= K; i++) {
-        cin >> start_info[i].first >> start_info[i].second;
-    }
+    for (int i = 1; i <= K; i++) cin >> k_list[i].y >> k_list[i].d;
 
     int answer = 0;
 
