@@ -17,11 +17,11 @@ pair<int, int> dir[4] = { {-1,0},{0,1},{1,0},{0,-1} };
 
 void move_south(int id)
 {
-    int x = -1;
+    int x = 1;
     int y = start_info[id].first;
 
     while (true) {
-        if (R < x + 2) break;
+        if (R + 2 < x + 2) break;
 
         if (arr[x + 1][y - 1] == 0 && arr[x + 2][y] == 0 && arr[x + 1][y + 1] == 0) {
             x++;
@@ -43,7 +43,7 @@ void move_west(int id)
     int d = k_list[id].d;
 
     while (true) {
-        if (x - 1 < 0 || R < x + 2) break;
+        if (R + 2 < x + 2) break;
         if (y - 2 < 1) break;
 
         if (arr[x - 1][y - 1] == 0 && arr[x][y - 2] == 0 && arr[x + 1][y - 1] == 0 && arr[x + 1][y - 2] == 0 && arr[x + 2][y - 1] == 0) {
@@ -68,7 +68,7 @@ void move_east(int id)
     int d = k_list[id].d;
 
     while (true) {
-        if (x - 1 < 0 || R < x + 2) break;
+        if (R + 2 < x + 2) break;
         if (C < y + 2) break;
 
         if (arr[x - 1][y + 1] == 0 && arr[x][y + 2] == 0 && arr[x + 1][y + 1] == 0 && arr[x + 1][y + 2] == 0 && arr[x + 2][y + 1] == 0) {
@@ -95,13 +95,13 @@ void Move(int id)
 
 bool Check_in(int id)
 {
-    if ((2 <= k_list[id].x && k_list[id].x <= R - 1) && (2 <= k_list[id].y && k_list[id].y <= C - 1)) return true;
+    if ((4 <= k_list[id].x && k_list[id].x <= R + 1) && (2 <= k_list[id].y && k_list[id].y <= C - 1)) return true;
     else return false;
 }
 
 void empty_map()
 {
-    for (int i = 0; i <= R; i++) {
+    for (int i = 0; i <= R + 2; i++) {
         for (int j = 0; j <= C; j++) {
             arr[i][j] = 0;
         }
@@ -138,7 +138,7 @@ int go_down(int id)
             int nx = out_x + dir[i].first;
             int ny = out_y + dir[i].second;
 
-            if (nx < 1 || R < nx || ny < 1 || C < ny) continue;
+            if (nx < 3 || R + 2 < nx || ny < 1 || C < ny) continue;
             if (arr[nx][ny] == arr[out_x][out_y]) continue;
             if (arr[nx][ny] == 0 || visited[arr[nx][ny]]) continue;
 
@@ -147,14 +147,14 @@ int go_down(int id)
         }
     }
 
-    return max_r;
+    return max_r - 2;
 }
 
 void print_grid()
 {
     cout << endl;
 
-    for (int i = 1; i <= R; i++) {
+    for (int i = 3; i <= R + 2; i++) {
         for (int j = 1; j <= C; j++) {
             cout << arr[i][j] << ' ';
         }
@@ -166,7 +166,7 @@ int main()
 {
     cin >> R >> C >> K;
 
-    arr.resize(R + 1, vector<int>(C + 1, 0));
+    arr.resize(R + 3, vector<int>(C + 1, 0));
     start_info.resize(K + 1);
     k_list.resize(K + 1);
 
