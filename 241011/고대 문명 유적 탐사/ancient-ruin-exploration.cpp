@@ -79,6 +79,20 @@ void find_first_value(int x, int y, int a, vector<vector<int>> arr)
 			max_value_first = sum;
 			angle = a;
 		}
+		else if (angle == a) {
+			if (O.second > y + 1) {
+				O = { x + 1, y + 1 };
+				max_value_first = sum;
+				angle = a;
+			}
+			else if (O.second == y + 1) {
+				if (O.first > x + 1) {
+					O = { x + 1, y + 1 };
+					max_value_first = sum;
+					angle = a;
+				}
+			}
+		}
 	}
 }
 
