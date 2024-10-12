@@ -60,8 +60,7 @@ int attack(int dir, int pos)
     int cnt = 0;
 
     for (int i = 1; i <= pos; i++) {
-        if (v[x + d[dir].first * i][y + d[dir].second * i] > 0) cnt++;
-
+        cnt++;
         answer += v[x + d[dir].first * i][y + d[dir].second * i];
         v[x + d[dir].first * i][y + d[dir].second * i] = 0;
     }
@@ -105,11 +104,11 @@ void fill_blank(int cnt)
 
 void remove_sequence()
 {
-    int num = v[snail_route[1].first][snail_route[1].second];
-
     while (true) {
         int cnt = 1;
         int blank_cnt = 0;
+        
+        int num = v[snail_route[1].first][snail_route[1].second];
 
         for (int i = 2; i < snail_route.size(); i++) {
             if (num == v[snail_route[i].first][snail_route[i].second]) {
@@ -164,11 +163,15 @@ void refill()
         }
     }
 
-    for (int i = 1; i <= 2 * tmp2.size(); i += 2) {
-        if (i + 1 >= snail_route.size()) break;
+    int idx = 1;
 
-        v[snail_route[i].first][snail_route[i].second] = tmp2[(i - 1) / 2].first;
-        v[snail_route[i + 1].first][snail_route[i + 1].second] = tmp2[(i - 1) / 2].second;
+    for (int i = 0; i < tmp2.size(); i++) {
+        v[snail_route[idx].first][snail_route[idx].second] = tmp2[i].first;
+        idx++;
+        if (idx >= snail_route.size()) break;
+        v[snail_route[idx].first][snail_route[idx].second] = tmp2[i].second;
+        idx++;
+        if (idx >= snail_route.size()) break;
     }
 }
 
@@ -201,7 +204,6 @@ int main()
     }
 
     make_route();
-    //print_grid();
 
     for (int i = 0; i < M; i++) {
         int blank_cnt = attack(m_list[i].first, m_list[i].second);
