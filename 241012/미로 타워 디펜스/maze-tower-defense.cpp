@@ -165,6 +165,8 @@ void refill()
     }
 
     for (int i = 1; i <= 2 * tmp2.size(); i += 2) {
+        if (i + 1 >= snail_route.size()) break;
+
         v[snail_route[i].first][snail_route[i].second] = tmp2[(i - 1) / 2].first;
         v[snail_route[i + 1].first][snail_route[i + 1].second] = tmp2[(i - 1) / 2].second;
     }
